@@ -19,7 +19,7 @@ afterEach(() => {
 // happy path 1
 test("Order 2 tickets for Movie tomorrow", async () => {
   await selectDateTime(page, "nav.page-nav > a:nth-child(2)", movieTime);
-  await orderTickets(page, 9, 4, 5);
+  await orderTickets(page, 3, 4, 5);
   actual = await getText(page, ticketHint);
   expect(actual).toContain(confirmingText);
 }, 50000);
@@ -27,7 +27,7 @@ test("Order 2 tickets for Movie tomorrow", async () => {
 // happy path 2
 test("Order 3 tickets for Movie week later", async () => {
   await selectDateTime(page, "nav.page-nav > a:nth-child(7)", movieTime);
-  await orderTickets(page,  1, 1, 2);
+  await orderTickets(page,  7, 1, 2);
   const actual = await getText(page, ticketHint);
   expect(actual).toContain(confirmingText);
 }, 50000);
@@ -36,6 +36,6 @@ test("Order 3 tickets for Movie week later", async () => {
 test("Try to order ticket for Movie on reserved seat", async () => {
   await expect(async () => {
     await selectDateTime(page, "nav.page-nav > a:nth-child(2)", movieTime);
-    await orderTickets(page, 9, 4);
+    await orderTickets(page, 3, 4, 5);
   }).rejects.toThrowError("Seat(s) reserved");
 }); 
