@@ -5,6 +5,7 @@ const { Given, When, Then, Before, After } = require("cucumber");
 const { getText } = require("../../lib/commands.js");
 
 const {
+  isSeatReserved,
   selectDateTime,
   orderTickets,
 } = require("../../lib/util.js");
@@ -45,6 +46,22 @@ When(
   }
 );
 
+When(
+  "trying to select reserved {int} row and {int} seat",
+  async function (int1, int2) {
+    //проверка занято ли место 
+    await isSeatReserved(this.page, int1, int2);
+  }
+);
+
+When(
+  "select {int} row and {int} seat",
+  async function (int1, int2) {
+    //выбор ряда и 1 места
+    return await orderTickets(this.page, int1, int2);
+  }
+);
+
 Then("ticket purchase is confirmed", async function () {
   //подтверждение бронирования
   const actual = await getText(this.page, "p.ticket__hint");
@@ -54,9 +71,10 @@ Then("ticket purchase is confirmed", async function () {
 });
 
 Then("booking is not possible", async function () {
+  //проверка что кнопка не активна
   const buttonStatus = await this.page.$eval(
     `.acceptin-button`,
     (el) => el.disabled
   );
-  expect(buttonStatus).toEqual(true);
+  expect(buttonStatus).equal(true);
 });
